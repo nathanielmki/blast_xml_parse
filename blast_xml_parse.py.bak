@@ -193,14 +193,14 @@ def input_checker(parsed_args):
     
     # If the input file does not exist provide an error message and exit.
     if not os.path.isfile(parsed_args.infile):
-        print("The input file %s does not exist, the program is now exiting." % parsed_args.infile)
+        print "The input file %s does not exist, the program is now exiting." % parsed_args.infile
         sys.exit()
     
     # Check the input file's extension. If not .xml the input is probably the wrong file. 
     # Print an error and exit.    
     f_name, f_extension = os.path.splitext(parsed_args.infile)
     if f_extension != '.xml':
-        print("The input file does not have a .xml file extension. The input must be in XML format.")
+        print "The input file does not have a .xml file extension. The input must be in XML format."
         sys.exit()
         
     # Check that if a query file has been provided, it exists. I am not checking the file extension at this time.
@@ -209,7 +209,7 @@ def input_checker(parsed_args):
     
     if query != '':
         if not os.path.isfile(parsed_args.infile):
-            print("The query file %s was specified, but does not exist, the program is now exiting." % query)
+            print "The query file %s was specified, but does not exist, the program is now exiting." % query
             sys.exit()
     
     # Bit of code to auto-generate an output file name based on the checked input.
