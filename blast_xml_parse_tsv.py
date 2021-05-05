@@ -170,12 +170,12 @@ def report_best_hit_on_query(infile, outfile = './best_hit.tsv'):
     # The header list simply is a list of fields that you would like to have in the tsv report. 
     # Keep in mind here that the names for the fields cannot have a comma.
     header_list = ['query id',  'subject id', '% identity', 'alignment length', 'mismatches', 'gap opens', 'q. start', 'q. end', 's. start', 's. end', 'evalue', 'bit score', 'subject description']
-    header = ','.join(header_list)
+    header = '\t'.join(header_list)
     result.append(header)
     
     cur_query = ''
     for line in [i.strip() for i in open(infile).readlines()[1:]]:
-        query = line.split(',')[0]
+        query = line.split('\t')[0]
         # Basically this works because the output is ordered by the best hit appearing first.
         # So i simply take the first occurance of any new query hit, and is the best hit.
         if query != cur_query:
