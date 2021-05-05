@@ -26,7 +26,7 @@ def make_query_dict(query):
 # The query file should be the one that you used to query the database. It HAS to be in fasta format.
 # Any other type of format will cause horrible errors.  You should have used a fasta file anyway, so this is
 # unlikely to be an issue.
-def parse_ncbi_xml_to_csv(infile, outfile, query, delim = ','):
+def parse_ncbi_xml_to_tsv(infile, outfile, query, delim ='\t'):
     # Bunch of compiled regular expressions.  While there are faster ways to do this, this way is more resistent to  
     # future changes in the BLAST XML output.
     
@@ -37,7 +37,7 @@ def parse_ncbi_xml_to_csv(infile, outfile, query, delim = ','):
         query_dict = make_query_dict(query)
     
     result = []
-    header_list = ['query id',  'subject id', '% identity', 'alignment length', 'mismatches', 'gap opens', 'q. start', 'q. end', 's. start', 's. end', 'evalue', 'bit score', 'subject description']
+    header_list = ['query_id',  'subject_id', '%_identity', 'alignment_length', 'mismatches', 'gap_opens', 'q._start', 'q._end', 's._start', 's._end', 'evalue', 'bit_score', 'subject_description']
     header = delim.join(header_list)
     result.append(header)
     
@@ -68,7 +68,7 @@ def parse_ncbi_xml_to_csv(infile, outfile, query, delim = ','):
     r_hsp_positive = re.compile("<Hsp_positive>")
     r_hsp_gaps = re.compile("<Hsp_gaps>")
     r_hsp_align_len = re.compile("<Hsp_align-len>")
-    # These variables are unlikely to be useful in a csv due to their huge length.
+    # These variables are unlikely to be useful in a tsv due to their huge length.
     r_hsp_qseq = re.compile("<Hsp_qseq>")
     r_hsp_hseq = re.compile("<Hsp_hseq>")
     r_hsp_midline = re.compile("<Hsp_midline>")
@@ -141,7 +141,7 @@ def parse_ncbi_xml_to_csv(infile, outfile, query, delim = ','):
             # If this is wrong for what you are doing modify this line appropriately.
             percent_ident = "%5.2f" %  (((float(hsp_identity)/float(hsp_align_len))*100))
             mismatch = str(int(hsp_align_len) - int(hsp_identity))
-            # So hit_def can contain commas, which screw up the csv output. I replace them with colons because this is how I ride.
+            # So hit_def can contain commas, which screw up the tsv output. I replace them with colons because this is how I ride.
             hit_def = hit_def.replace(',', ':')
                        
             ##################################### HOW TO CUSTOMIZE YOUR OUTPUT!!!!###########################################################
@@ -152,7 +152,7 @@ def parse_ncbi_xml_to_csv(infile, outfile, query, delim = ','):
             # comma seperate the variables in the brackets.                                                                                 #
             # ex. var_list = [var1, var2, var3]  Then you are done!  The header line (where the variables are named) will be wrong though.  #
             # just look above in the code for header_list.  Name each field in the convention provided. Avoiding spaces is advised, but     #
-            # obviously I ignored that. Just know that when you open the csv file you should uncheck space as a delimiter.                  #
+            # obviously I ignored that. Just know that when you open the tsv file you should uncheck space as a delimiter.                  #
             #################################################################################################################################
             
             var_list = [query_id, hit_id, percent_ident, hsp_align_len, mismatch, hsp_gaps, hsp_query_from, hsp_query_to, hsp_hit_from, hsp_hit_to, hsp_evalue, hsp_bit_score, hit_def]
@@ -163,14 +163,14 @@ def parse_ncbi_xml_to_csv(infile, outfile, query, delim = ','):
             
 # this is quick and dirty, so sorry about how horribly this piece of code was written.
 
-def report_best_hit_on_query(infile, outfile = './best_hit.csv'):
+def report_best_hit_on_query(infile, outfile = './best_hit.tsv'):
     result = []
     
     # if you are planning on modifying this code:
-    # The header list simply is a list of fields that you would like to have in the csv report. 
+    # The header list simply is a list of fields that you would like to have in the tsv report. 
     # Keep in mind here that the names for the fields cannot have a comma.
     header_list = ['query id',  'subject id', '% identity', 'alignment length', 'mismatches', 'gap opens', 'q. start', 'q. end', 's. start', 's. end', 'evalue', 'bit score', 'subject description']
-    header = ','.join(header_list)
+    header = '\t'.join(header_list)
     result.append(header)
     
     cur_query = ''
@@ -216,7 +216,7 @@ def input_checker(parsed_args):
     # While technically not something to check, I put this code here anyway so that 
     # all option processing is done in one place.
     if parsed_args.outfile == '':
-        outfile = infile.split('.')[-2] + '.csv'
+        outfile = infile.split('.')[-2] + '.tsv'
     else:
         outfile = parsed_args.outfile
     
@@ -226,13 +226,13 @@ def main():
     # I time the program to tweak the implementation so I know the choices I made run faster.
     # start = time.time()
 
-    parser = argparse.ArgumentParser(description='Convert a BLAST XML file into a CSV for further analysis.')
+    parser = argparse.ArgumentParser(description='Convert a BLAST XML file into a tsv for further analysis.')
 
     parser.add_argument("-i", "--infile", required=True, dest="infile",
                 help="Input BLAST XML file. This option is required", metavar="FILE")
                 
     parser.add_argument("-o", "--outfile", dest="outfile",
-                help="Store the result of the program, this file name should end in '.csv'. If omitted the program will use the base file name and '.csv will be added.",
+                help="Store the result of the program, this file name should end in '.tsv'. If omitted the program will use the base file name and '.tsv will be added.",
                 metavar="FILE", default='')
                 
     parser.add_argument("-q", "--query", dest="query", metavar="FILE", default='',
@@ -241,8 +241,8 @@ def main():
     infile, outfile, query = input_checker(parser.parse_args())
     
     # This is where the computational component of the program begins.
-    # parse_ncbi_xml_to_csv() and report_best_hit_on_query() do all the work.
-    parse_ncbi_xml_to_csv(infile, outfile, query)
+    # parse_ncbi_xml_to_tsv() and report_best_hit_on_query() do all the work.
+    parse_ncbi_xml_to_tsv(infile, outfile, query)
 
     best_hit_infile = outfile
     best_hit_outfile = outfile.replace('.', '_best_hits.')
