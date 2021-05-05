@@ -169,7 +169,7 @@ def report_best_hit_on_query(infile, outfile = './best_hit.tsv'):
     # if you are planning on modifying this code:
     # The header list simply is a list of fields that you would like to have in the tsv report. 
     # Keep in mind here that the names for the fields cannot have a comma.
-    header_list = ['query id',  'subject id', '% identity', 'alignment length', 'mismatches', 'gap opens', 'q. start', 'q. end', 's. start', 's. end', 'evalue', 'bit score', 'subject description']
+    header_list = ['query_id',  'subject_id', '%_identity', 'alignment_length', 'mismatches', 'gap_opens', 'q._start', 'q._end', 's._start', 's._end', 'evalue', 'bit_score', 'subject_description']
     header = '\t'.join(header_list)
     result.append(header)
     
