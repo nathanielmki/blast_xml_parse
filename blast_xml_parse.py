@@ -245,7 +245,7 @@ def main():
     parse_ncbi_xml_to_tsv(infile, outfile, query)
 
     best_hit_infile = outfile
-    best_hit_outfile = outfile.replace('.parsed', '_best_hits.parsed.')
+    best_hit_outfile = outfile.replace('.tsv', '.best_hits.tsv')
     
     report_best_hit_on_query(best_hit_infile, best_hit_outfile)
     
